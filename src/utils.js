@@ -83,7 +83,11 @@ function getClientPosition(elem) {
     top: y,
   };
 }
-
+/**
+ * 获取window的偏移
+ * @param {*} w 
+ * @param {*} top 
+ */
 function getScroll(w, top) {
   let ret = w[`page${top ? 'Y' : 'X'}Offset`];
   const method = `scroll${top ? 'Top' : 'Left'}`;
@@ -107,10 +111,17 @@ function getScrollTop(w) {
   return getScroll(w, true);
 }
 
+/**
+ * 获取元素相对文档的偏移(不是视窗)
+ * @param {*} el 
+ */
 function getOffset(el) {
+  // 现获取元素相对视窗的left, top
   const pos = getClientPosition(el);
+  // 获取元素所在的window对象
   const doc = el.ownerDocument;
   const w = doc.defaultView || doc.parentWindow;
+  // 加上文档偏移
   pos.left += getScrollLeft(w);
   pos.top += getScrollTop(w);
   return pos;
@@ -125,7 +136,10 @@ function isWindow(obj) {
   /* eslint eqeqeq:0 */
   return obj !== null && obj !== undefined && obj == obj.window;
 }
-
+/**
+ * 获取元素所在document
+ * @param {*} node 
+ */
 function getDocument(node) {
   if (isWindow(node)) {
     return node.document;
@@ -157,6 +171,11 @@ const RUNTIME_STYLE = 'runtimeStyle';
 const LEFT = 'left';
 const PX = 'px';
 
+/**
+ * 兼容ie getComputedStyle
+ * @param {}} elem 
+ * @param {*} name 
+ */
 function _getComputedStyleIE(elem, name) {
   // currentStyle maybe null
   // http://msdn.microsoft.com/en-us/library/ms535231.aspx
@@ -199,6 +218,11 @@ if (typeof window !== 'undefined') {
     : _getComputedStyleIE;
 }
 
+/**
+ * 获取偏移方向
+ * @param {*} dir 
+ * @param {*} option 
+ */
 function getOffsetDirection(dir, option) {
   if (dir === 'left') {
     return option.useCssRight ? 'right' : dir;
@@ -291,11 +315,17 @@ function setLeftTop(elem, offset, option) {
   css(elem, ret);
 }
 
+/**
+ * 设置x,y的位移
+ * @param {*} elem 
+ * @param {*} offset 
+ */
 function setTransform(elem, offset) {
   const originalOffset = getOffset(elem);
   const originalXY = getTransformXY(elem);
   const resultXY = { x: originalXY.x, y: originalXY.y };
   if ('left' in offset) {
+    // 位移 = 目标偏移 - 原始偏移 + 原始位移
     resultXY.x = originalXY.x + offset.left - originalOffset.left;
   }
   if ('top' in offset) {
@@ -304,6 +334,12 @@ function setTransform(elem, offset) {
   setTransformXY(elem, resultXY);
 }
 
+/**
+ * 设置偏移
+ * @param {*} elem 
+ * @param {*} offset 目标偏移
+ * @param {*} option 
+ */
 function setOffset(elem, offset, option) {
   if (option.ignoreShake) {
     const oriOffset = getOffset(elem);
