@@ -29,13 +29,13 @@ function getOffsetParent(element) {
   let parent;
   let positionStyle = utils.css(element, 'position');
   const skipStatic = positionStyle === 'fixed' || positionStyle === 'absolute';
-
+  // 如果元素本身是没有绝对定位的, 那么直接返回它的父元素, 因为它的偏移就是相对于父元素的
   if (!skipStatic) {
     return element.nodeName.toLowerCase() === 'html'
       ? null
       : getParent(element);
   }
-
+  // 如果元素本身是绝对定位的, 那么它的偏移就是相对于它的上一个定位不为static的元素
   for (
     parent = getParent(element);
     parent && parent !== body;

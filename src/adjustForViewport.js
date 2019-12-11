@@ -1,5 +1,12 @@
 import utils from './utils';
 
+/**
+ * 如果元素偏移超出视图, 进行调整
+ * @param {*} elFuturePos 目标偏移
+ * @param {*} elRegion 元素的区域
+ * @param {*} visibleRect 可见区域
+ * @param {*} overflow 元素溢出配置
+ */
 function adjustForViewport(elFuturePos, elRegion, visibleRect, overflow) {
   const pos = utils.clone(elFuturePos);
   const size = {
@@ -7,6 +14,7 @@ function adjustForViewport(elFuturePos, elRegion, visibleRect, overflow) {
     height: elRegion.height,
   };
 
+  // 如果目标偏移的left小于可见区域的left, 那么调整过后left就为可见区域的left
   if (overflow.adjustX && pos.left < visibleRect.left) {
     pos.left = visibleRect.left;
   }

@@ -1,5 +1,6 @@
 /**
  * 获取 node 上的 align 对齐点 相对于页面的坐标
+ * align: tl,br,tr这种
  */
 
 function getAlignOffset(region, align) {
@@ -8,10 +9,10 @@ function getAlignOffset(region, align) {
   const w = region.width;
   const h = region.height;
 
-  let x = region.left;
+  let x = region.left; // 对齐target的left, top
   let y = region.top;
 
-  if (V === 'c') {
+  if (V === 'c') { // y轴对齐target的center
     y += h / 2;
   } else if (V === 'b') {
     y += h;

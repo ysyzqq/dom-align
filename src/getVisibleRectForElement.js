@@ -20,6 +20,7 @@ function getVisibleRectForElement(element) {
 
   // Determine the size of the visible rect by climbing the dom accounting for
   // all scrollable containers.
+  // 循环去获取父元素css overflow设置了的offset, 
   while (el) {
     // clientWidth is zero for inline block elements in ie.
     if (
@@ -27,12 +28,14 @@ function getVisibleRectForElement(element) {
       // body may have overflow set on it, yet we still get the entire
       // viewport. In some browsers, el.offsetParent may be
       // document.documentElement, so check for that too.
+      // 元素的overflow设置了
       (el !== body &&
         el !== documentElement &&
         utils.css(el, 'overflow') !== 'visible')
     ) {
       const pos = utils.offset(el);
       // add border
+      // 添加元素border的宽度
       pos.left += el.clientLeft;
       pos.top += el.clientTop;
       visibleRect.top = Math.max(visibleRect.top, pos.top);
@@ -55,6 +58,7 @@ function getVisibleRectForElement(element) {
   // Set element position to fixed
   // make sure absolute element itself don't affect it's visible area
   // https://github.com/ant-design/ant-design/issues/7601
+  // 如果元素本身已经是绝对定位, 将定位修改为fixed, 保证不影响自身的可见区域
   let originalPosition = null;
   if (!utils.isWindow(element) && element.nodeType !== 9) {
     originalPosition = element.style.position;
@@ -86,8 +90,9 @@ function getVisibleRectForElement(element) {
     element.style.position = originalPosition;
   }
 
+  // 如果祖先元素是fixed
   if (isAncestorFixed(element)) {
-    // Clip by viewport's size.
+    // Clip by viewport's size. 通过视窗的范围来裁剪
     visibleRect.left = Math.max(visibleRect.left, scrollX);
     visibleRect.top = Math.max(visibleRect.top, scrollY);
     visibleRect.right = Math.min(visibleRect.right, scrollX + viewportWidth);
@@ -101,6 +106,7 @@ function getVisibleRectForElement(element) {
     visibleRect.bottom = Math.min(visibleRect.bottom, maxVisibleHeight);
   }
 
+  // 规则判断
   return visibleRect.top >= 0 &&
     visibleRect.left >= 0 &&
     visibleRect.bottom > visibleRect.top &&

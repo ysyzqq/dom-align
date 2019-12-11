@@ -1,5 +1,9 @@
 import utils from './utils';
 
+/**
+ * 获取元素所在的区域, 包括相对文档的偏移, 宽高(outerWidth)
+ * @param {*} node 
+ */
 function getRegion(node) {
   let offset;
   let w;

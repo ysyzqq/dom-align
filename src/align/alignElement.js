@@ -16,6 +16,12 @@ function isOutOfVisibleRect(target) {
   );
 }
 
+/**
+ * 对齐元素
+ * @param {*} el source元素
+ * @param {*} refNode target元素
+ * @param {*} align 配置
+ */
 function alignElement(el, refNode, align) {
   const target = align.target || refNode;
   const refNodeRegion = getRegion(target);

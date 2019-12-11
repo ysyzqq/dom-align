@@ -2,7 +2,7 @@ import utils from '../utils';
 import doAlign from './align';
 
 /**
- * `tgtPoint`: { pageX, pageY } or { clientX, clientY }.
+ * `tgtPoint`: { pageX, pageY } or { clientX, clientY }. 对齐的目标坐标, 如果提供的是基于视窗的client偏移, 内部会转换成基于文档的pageXY
  * If client position provided, will internal convert to page position.
  */
 

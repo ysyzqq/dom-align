@@ -11,6 +11,7 @@ import getElFuturePos from '../getElFuturePos';
 
 // http://yiminghe.iteye.com/blog/1124720
 
+// 判断几种计算后的偏移需要调整的情况
 function isFailX(elFuturePos, elRegion, visibleRect) {
   return (
     elFuturePos.left < visibleRect.left ||
@@ -39,6 +40,7 @@ function isCompleteFailY(elFuturePos, elRegion, visibleRect) {
   );
 }
 
+// 对位置做翻转, 例如: tl => br
 function flip(points, reg, map) {
   const ret = [];
   utils.each(points, p => {
@@ -51,11 +53,13 @@ function flip(points, reg, map) {
   return ret;
 }
 
+// 对偏移做翻转, 例如: 20 => -20
 function flipOffset(offset, index) {
   offset[index] = -offset[index];
   return offset;
 }
 
+// 将提供的百分比偏移转换为10进制
 function convertOffset(str, offsetLen) {
   let n;
   if (/%$/.test(str)) {
@@ -66,6 +70,7 @@ function convertOffset(str, offsetLen) {
   return n || 0;
 }
 
+// 标准化偏移
 function normalizeOffset(offset, el) {
   offset[0] = convertOffset(offset[0], el.width);
   offset[1] = convertOffset(offset[1], el.height);
@@ -75,6 +80,15 @@ function normalizeOffset(offset, el) {
  * @param el
  * @param tgtRegion 参照节点所占的区域: { left, top, width, height }
  * @param align
+ * align: {
+ *    points: [tl(源位置),tl(目标位置)],
+ *    offset: [源left偏移, 源top偏移],
+ *    targetOffset: [目标left偏移, 目标top偏移],
+ *    overflow: {
+ *      adjustX: 溢出后调整x
+ *      adjustY: 溢出后调整y
+ *    }
+ * }
  */
 function doAlign(el, tgtRegion, align, isTgtRegionVisible) {
   let points = align.points;
@@ -82,6 +96,7 @@ function doAlign(el, tgtRegion, align, isTgtRegionVisible) {
   let targetOffset = align.targetOffset || [0, 0];
   let overflow = align.overflow;
   const source = align.source || el;
+  // 复制一下数据
   offset = [].concat(offset);
   targetOffset = [].concat(targetOffset);
   overflow = overflow || {};
@@ -129,7 +144,7 @@ function doAlign(el, tgtRegion, align, isTgtRegionVisible) {
           newOffset,
           newTargetOffset,
         );
-
+        // 翻转后的新定位点可以展现
         if (!isCompleteFailX(newElFuturePos, elRegion, visibleRect)) {
           fail = 1;
           points = newPoints;
@@ -207,7 +222,7 @@ function doAlign(el, tgtRegion, align, isTgtRegionVisible) {
     utils.css(
       source,
       'width',
-      utils.width(source) + newElRegion.width - elRegion.width,
+      utils.width(source) + newElRegion.width - elRegion.width, // 可能会有额外多出来的margin
     );
   }
 
